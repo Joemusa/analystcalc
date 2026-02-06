@@ -53,8 +53,8 @@ if submit:
                 else:
                     # Parse JSON safely
                     try:
-                        data = response.json()
-                        answer = data.get("answer")
+                        st.markdown(response.text)
+
 
                         if answer:
                             st.markdown(answer)
