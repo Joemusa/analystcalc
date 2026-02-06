@@ -1,50 +1,29 @@
-import streamlit as st
-import requests
-import os
-
-# -----------------------------
-# CONFIG
-
-
-# -----------------------------
-MAKE_WEBHOOK_URL = os.getenv("MAKE_WEBHOOK_URL")
-
-
-
-st.set_page_config(page_title="Analytics Calculation Assistant")
-
-# -----------------------------
-# UI
-# -----------------------------
-st.title("📊 Analytics Calculation Assistant")
-
-st.write("Ask how to calculate analytics metrics like contribution, distribution, growth, etc.")
-
-question = st.text_input(
-    "Enter your question",
-    placeholder="e.g. How do I calculate numeric distribution?"
-)
-
-submit = st.button("Get Answer")
-
-# -----------------------------
-# LOGIC
-# -----------------------------
 if submit and question.strip():
     with st.spinner("Thinking..."):
         try:
             response = requests.post(
                 MAKE_WEBHOOK_URL,
                 json={"question": question},
-                timeout=30
+                timeout=90
             )
 
-            if response.status_code == 200:
+            st.write("Status code:", response.status_code)
+            st.write("Raw response text:")
+            st.write(response.text)
+
+            # Try JSON parsing explicitly
+            try:
                 data = response.json()
-                st.success("Answer")
-                st.markdown(data.get("answer", "No answer returned."))
-            else:
-                st.error("Error communicating with the calculation service.")
+                st.success("Parsed JSON:")
+                st.write(data)
+                st.markdown(data.get("answer", "No answer key found"))
+            except Exception as e:
+                st.error("JSON parsing failed")
+                st.write(str(e))
+
+        except Exception as e:
+            st.error("Request failed")
+            st.write(str(e))
 
         except Exception:
             st.error("Unable to reach the service. Please try again later.")
