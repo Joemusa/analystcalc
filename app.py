@@ -8,7 +8,8 @@ st.write("Webhook URL loaded:", MAKE_WEBHOOK_URL)
 
 
 # -----------------------------
-st.write("Webhook URL loaded:", MAKE_WEBHOOK_URL)
+MAKE_WEBHOOK_URL = os.getenv("https://hook.eu2.make.com/lbeu75blbrpwphhvm8un8pe36mam2xp3")
+
 
 
 st.set_page_config(page_title="Analytics Calculation Assistant")
