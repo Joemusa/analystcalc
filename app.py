@@ -4,6 +4,9 @@ import os
 
 # -----------------------------
 # CONFIG
+st.write("Webhook URL loaded:", https://hook.eu2.make.com/lbeu75blbrpwphhvm8un8pe36mam2xp3
+)
+
 # -----------------------------
 MAKE_WEBHOOK_URL = os.getenv("https://hook.eu2.make.com/lbeu75blbrpwphhvm8un8pe36mam2xp3")
 
