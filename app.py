@@ -9,7 +9,7 @@ import os
 # -----------------------------
 MAKE_WEBHOOK_URL = os.getenv("MAKE_WEBHOOK_URL")
 
-t.write("Webhook URL loaded:", MAKE_WEBHOOK_URL)
+st.write("Webhook URL loaded:", MAKE_WEBHOOK_URL)
 
 st.set_page_config(page_title="Analytics Calculation Assistant")
 
