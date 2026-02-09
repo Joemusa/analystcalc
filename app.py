@@ -1,7 +1,7 @@
 import streamlit as st
 
 # 🔹 Import logic
-from parser import extract_numbers, detect_metric
+from parser import extract_numbers_roles, detect_metric
 from calculations import (
     numeric_distribution,
     market_share,
