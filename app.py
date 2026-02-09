@@ -26,22 +26,33 @@ result = None  # shared result container
 
 if user_question:
     metric = detect_metric(user_question)
-    numbers = extract_numbers(user_question)
+    roles = extract_number_roles(user_question)
 
-    if metric == "Numeric Distribution" and len(numbers) >= 2:
-        result = numeric_distribution(numbers[0], numbers[1])
+    if metric == "Numeric Distribution" and "stocking" in roles and "total_stores" in roles:
+        result = numeric_distribution(
+            roles["stocking"],
+            roles["total_stores"]
+        )
 
-    elif metric == "Market Share" and len(numbers) >= 2:
-        result = market_share(numbers[0], numbers[1])
+    elif metric == "Market Share" and "brand_sales" in roles and "market_sales" in roles:
+        result = market_share(
+            roles["brand_sales"],
+            roles["market_sales"]
+        )
 
-    elif metric == "Contribution" and len(numbers) >= 2:
-        result = contribution(numbers[0], numbers[1])
+    elif metric == "Contribution" and len(roles) >= 2:
+        values = list(roles.values())
+        result = contribution(values[0], values[1])
 
-    elif metric == "Growth" and len(numbers) >= 2:
-        result = growth(numbers[0], numbers[1])
+    elif metric == "Growth" and "current" in roles and "previous" in roles:
+        result = growth(
+            roles["current"],
+            roles["previous"]
+        )
 
     else:
-        st.warning("I understood the question, but I need more numbers to calculate.")
+        st.warning("I understood the metric, but not all required values.")
+
 
 # =========================================================
 # 🔹 MANUAL DROPDOWN UI (EXISTING PART)
