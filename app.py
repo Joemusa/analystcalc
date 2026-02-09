@@ -1,73 +1,51 @@
 import streamlit as st
-import requests
-import os
-
-# -----------------------------
-# CONFIG
-# -----------------------------
-MAKE_WEBHOOK_URL = os.getenv("MAKE_WEBHOOK_URL")
-
-st.set_page_config(
-    page_title="Analytics Calculation Assistant",
-    layout="centered"
+from calculations import (
+    numeric_distribution,
+    market_share,
+    contribution,
+    growth
 )
 
-# -----------------------------
-# UI
-# -----------------------------
-st.title("📊 Analytics Calculation Assistant")
+st.set_page_config(page_title="Calculation Engine", layout="centered")
+st.title("📊 Calculation Engine")
 
-st.write(
-    "Ask how to calculate analytics metrics like contribution, "
-    "numeric distribution, growth, etc."
+metric = st.selectbox(
+    "Choose a metric",
+    [
+        "Numeric Distribution",
+        "Market Share",
+        "Contribution",
+        "Growth"
+    ]
 )
 
-question = st.text_input(
-    "Enter your question",
-    placeholder="e.g. How do I calculate numeric distribution?"
-)
+if metric == "Numeric Distribution":
+    a = st.number_input("Stores stocking the product", min_value=0)
+    b = st.number_input("Total stores", min_value=0)
+    if st.button("Calculate"):
+        result = numeric_distribution(a, b)
 
-submit = st.button("Get Answer")
+elif metric == "Market Share":
+    a = st.number_input("Brand sales", min_value=0.0)
+    b = st.number_input("Total market sales", min_value=0.0)
+    if st.button("Calculate"):
+        result = market_share(a, b)
 
-# -----------------------------
-# LOGIC
-# -----------------------------
-if submit:
-    if not question.strip():
-        st.warning("Please enter a question.")
-    elif not MAKE_WEBHOOK_URL:
-        st.error("Webhook URL is not configured.")
-    else:
-        with st.spinner("Thinking..."):
-            try:
-                response = requests.post(
-                    MAKE_WEBHOOK_URL,
-                    json={"question": question},
-                    timeout=90  # important for Make + AI
-                )
+elif metric == "Contribution":
+    a = st.number_input("Part value", min_value=0.0)
+    b = st.number_input("Total value", min_value=0.0)
+    if st.button("Calculate"):
+        result = contribution(a, b)
 
-                # Check HTTP status
-                if response.status_code != 200:
-                    st.error(f"Request failed with status {response.status_code}")
-                    st.write(response.text)
-                else:
-                    # Parse JSON safely
-                    try:
-                        st.markdown(response.text)
+elif metric == "Growth":
+    a = st.number_input("Current value", min_value=0.0)
+    b = st.number_input("Previous value", min_value=0.0)
+    if st.button("Calculate"):
+        result = growth(a, b)
 
-
-                        if answer:
-                            st.markdown(answer)
-                        else:
-                            st.warning("No answer returned from the service.")
-                            st.write(data)
-
-                    except Exception as json_error:
-                        st.error("Failed to parse JSON response.")
-                        st.write("Raw response:")
-                        st.write(response.text)
-                        st.write(json_error)
-
-            except Exception as request_error:
-                st.error("Unable to reach the service.")
-                st.write(request_error)
+if "result" in locals() and result:
+    st.divider()
+    st.subheader(result["metric"])
+    st.write("**Formula:**", result["formula"])
+    st.write("**Calculation:**", result["calculation"])
+    st.success(f"Result: {result['result']} {result['unit']}")
