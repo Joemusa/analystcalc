@@ -1,30 +1,23 @@
 import re
 
-def extract_numbers(text: str):
-    """
-    Extract all numbers from text.
-    Returns a list of floats.
-    """
-    numbers = re.findall(r"\d+\.?\d*", text)
-    return [float(n) for n in numbers]
-
-
-def detect_metric(text: str):
-    """
-    Detect which metric the user is asking for.
-    """
+def extract_number_roles(text: str):
     text = text.lower()
 
-    if "numeric distribution" in text or "distribution" in text:
-        return "Numeric Distribution"
+    roles = {}
 
-    if "market share" in text or "share" in text:
-        return "Market Share"
+    patterns = {
+        "current": r"(current|this month|now)\s*(\d+\.?\d*)",
+        "previous": r"(previous|last month|before|from)\s*(\d+\.?\d*)",
+        "stocking": r"(\d+\.?\d*)\s*(stores)?\s*(stock|stocking)",
+        "total_stores": r"(out of|total)\s*(\d+\.?\d*)",
+        "brand_sales": r"(brand|product)\s*(sales)?\s*(\d+\.?\d*)",
+        "market_sales": r"(market)\s*(sales)?\s*(\d+\.?\d*)"
+    }
 
-    if "growth" in text or "increase" in text or "decline" in text:
-        return "Growth"
+    for role, pattern in patterns.items():
+        match = re.search(pattern, text)
+        if match:
+            roles[role] = float(match.groups()[-1])
 
-    if "contribution" in text:
-        return "Contribution"
+    return roles
 
-    return None
