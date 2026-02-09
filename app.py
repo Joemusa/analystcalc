@@ -1,3 +1,11 @@
+from parser import extract_numbers, detect_metric
+from calculations import (
+    numeric_distribution,
+    market_share,
+    contribution,
+    growth
+)
+
 import streamlit as st
 from calculations import (
     numeric_distribution,
