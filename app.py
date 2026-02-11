@@ -95,11 +95,15 @@ def generate_metric_response(metric):
 # =========================================================
 # 🧠 NATURAL LANGUAGE INPUT
 # =========================================================
-st.subheader("🧠 Ask in plain English")
+st.subheader("🧠 Ask in Plain English")
 
 user_question = st.text_input(
-    "Example: Calculate numeric distribution if 120 stores stock the product out of 400"
+    "Examples: \n"
+    "- How to calculate year on year growth\n"
+    "- Calculate numeric distribution if 120 stores stock out of 400\n"
+    "- What is contribution?\n"
 )
+
 
 result = None  # shared result container
 
