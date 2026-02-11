@@ -21,7 +21,7 @@ mode = st.radio(
 from parser import extract_number_roles, detect_metric
 from calculations import (
     numeric_distribution,
-    Weighted_distribution,
+    weighted_distribution,
     market_share,
     contribution,
     growth
