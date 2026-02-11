@@ -58,8 +58,8 @@ def metric_guide(metric):
 
         "growth": {
             "title": "Growth (Year-on-Year)",
-            "formula": "Growth (%) = ((Current - Previous) ÷ Previous) × 100",
-            "example": {"current": 100000, "previous": 80000},
+            "formula": "Growth (%) = ((CY Sales - LY Sales) ÷ LY Sales) × 100",
+            "example": {"cy sales": 100000, "ly sales": 80000},
             "explanation": "Growth shows percentage increase or decrease versus prior period."
         },
 
