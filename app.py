@@ -14,7 +14,7 @@ st.set_page_config(page_title="Calculation Engine", layout="centered")
 st.title("📊 Calculation Engine")
 
 # =========================================================
-# 🧠 NATURAL LANGUAGE INPUT (THIS IS THE NEW PART)
+# 🧠 NATURAL LANGUAGE INPUT
 # =========================================================
 st.subheader("🧠 Ask in plain English")
 
@@ -22,13 +22,24 @@ user_question = st.text_input(
     "Example: Calculate numeric distribution if 120 stores stock the product out of 400"
 )
 
-result = None  # shared result container
+result = None
 
 if user_question:
+
     metric = detect_metric(user_question)
     roles = extract_number_roles(user_question)
 
-    if metric == "Numeric Distribution" and "stocking" in roles and "total_stores" in roles:
+    # -----------------------------------------------------
+    # 🔹 IF USER JUST WANTS TO KNOW HOW TO CALCULATE
+    # -----------------------------------------------------
+    if metric and len(roles) == 0:
+        explanation = generate_metric_response(metric.lower().replace(" ", "_"))
+        st.markdown(explanation)
+
+    # -----------------------------------------------------
+    # 🔹 CALCULATION MODE
+    # -----------------------------------------------------
+    elif metric == "Numeric Distribution" and "stocking" in roles and "total_stores" in roles:
         result = numeric_distribution(
             roles["stocking"],
             roles["total_stores"]
@@ -52,6 +63,7 @@ if user_question:
 
     else:
         st.warning("I understood the metric, but not all required values.")
+
 
 
 # =========================================================
@@ -95,14 +107,49 @@ elif metric_choice == "Growth":
         result = growth(a, b)
 
 # =========================================================
-# 🔹 RESULT DISPLAY (SHARED)
+# 🔹 RESULT DISPLAY (ENHANCED TRAINING OUTPUT)
 # =========================================================
 if result:
+    guide = metric_guide(result["metric"])
+
     st.divider()
     st.subheader(result["metric"])
-    st.write("**Formula:**", result["formula"])
-    st.write("**Calculation:**", result["calculation"])
+
+    # Formula
+    st.markdown("### 📐 Formula")
+    st.code(guide["formula"])
+
+    # User Calculation
+    st.markdown("### 🧮 Your Calculation")
+    st.write(result["calculation"])
     st.success(f"Result: {result['result']} {result['unit']}")
+
+    # Business Explanation
+    st.markdown("### 📘 Business Meaning")
+    st.write(guide["explanation"])
+
+    # Arbitrary Example
+    example_a, example_b = guide["example_values"]
+
+    if result["metric"] == "Numeric Distribution":
+        example_result = (example_a / example_b) * 100
+        example_calc = f"({example_a} ÷ {example_b}) × 100 = {example_result:.2f}%"
+
+    elif result["metric"] == "Market Share":
+        example_result = (example_a / example_b) * 100
+        example_calc = f"({example_a} ÷ {example_b}) × 100 = {example_result:.2f}%"
+
+    elif result["metric"] == "Contribution":
+        example_result = (example_a / example_b) * 100
+        example_calc = f"({example_a} ÷ {example_b}) × 100 = {example_result:.2f}%"
+
+    elif result["metric"] == "Growth":
+        example_result = ((example_a - example_b) / example_b) * 100
+        example_calc = f"(({example_a} - {example_b}) ÷ {example_b}) × 100 = {example_result:.2f}%"
+
+    st.markdown("### 🧪 Example")
+    st.write(example_calc)
+
 
 
 
