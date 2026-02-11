@@ -1,5 +1,18 @@
 import streamlit as st
 
+def display_bi_logic(metric):
+
+    image_map = {
+        "Weighted Distribution": "assets/weighted_distribution.png",
+        "Growth": "assets/growth_calc.png",
+        "Numeric Distribution": "assets/numeric_distribution.png"
+    }
+
+    if metric in image_map:
+        with st.expander("📷 View BI System Logic"):
+            st.image(image_map[metric], use_container_width=True)
+
+
 st.set_page_config(
     page_title="DataOrbis Metrics Assistant",
     page_icon="📊",
