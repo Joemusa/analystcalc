@@ -140,10 +140,6 @@ def display_result(result_dict):
     st.markdown("### ✅ Result")
     st.success(f"{result_dict['result']} {result_dict['unit']}")
 
-
-
-
-
 st.subheader("🧠 Ask in Plain English")
 
 user_question = st.text_input(
