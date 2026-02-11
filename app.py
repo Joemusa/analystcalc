@@ -16,6 +16,24 @@ mode = st.radio(
     ["Explain a Metric", "Calculate with My Numbers"]
 )
 
+# =========================================================
+# 🔹 MANUAL DROPDOWN UI
+# =========================================================
+
+st.divider()
+st.subheader("🔢 Or calculate manually")
+
+metric_choice = st.selectbox(
+    "Choose a metric",
+    [
+        "Numeric Distribution",
+        "Weighted Distribution",
+        "Market Share",
+        "Contribution",
+        "Growth"
+    ]
+)
+
 
 # 🔹 Import logic
 from parser import extract_number_roles, detect_metric
