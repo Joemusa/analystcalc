@@ -6,6 +6,9 @@ def detect_metric(text: str):
     if "numeric distribution" in text or "distribution" in text:
         return "Numeric Distribution"
 
+    if "weighted distribution" in text or "weighted" in text:
+        return "Weighted Distribution"
+
     if "market share" in text or "share" in text:
         return "Market Share"
 
