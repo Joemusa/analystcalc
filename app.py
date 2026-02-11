@@ -11,6 +11,11 @@ st.caption("Internal Tool – Sales & Distribution KPI Calculator")
 
 st.divider()
 
+mode = st.radio(
+    "Select Mode",
+    ["Explain a Metric", "Calculate with My Numbers"]
+)
+
 
 # 🔹 Import logic
 from parser import extract_number_roles, detect_metric
