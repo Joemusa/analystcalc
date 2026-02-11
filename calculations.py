@@ -47,12 +47,12 @@ def growth(current, previous):
     if previous == 0:
         return None
 
-    value = ((current - previous) / previous) * 100
+    value = ((cy sales - ly sales) / ly sales) * 100
 
     return {
         "metric": "Growth",
         "formula": "(CY Sales − LY Sales) ÷ LY Sales × 100",
-        "calculation": f"({current} − {previous}) ÷ {previous} × 100",
+        "calculation": f"({cy sales} − {ly sales}) ÷ {ly sales} × 100",
         "result": round(value, 2),
         "unit": "%"
     }
