@@ -104,3 +104,41 @@ if result:
     st.write("**Calculation:**", result["calculation"])
     st.success(f"Result: {result['result']} {result['unit']}")
 
+def metric_guide(metric):
+
+    guides = {
+
+        "numeric_distribution": {
+            "title": "Numeric Distribution",
+            "formula": "Numeric Distribution (%) = (Number of stores stocking the product ÷ Total stores in universe) × 100",
+            "example": {
+                "stocking_stores": 120,
+                "total_stores": 400
+            },
+            "explanation": "Numeric Distribution measures how widely a product is available across the market. It tells us reach, not sales."
+        },
+
+        "growth": {
+            "title": "Growth",
+            "formula": "Growth (%) = ((Current Period - Previous Period) ÷ Previous Period) × 100",
+            "example": {
+                "current": 100000,
+                "previous": 80000
+            },
+            "explanation": "Growth shows how much performance increased or decreased compared to the previous period."
+        },
+
+        "contribution": {
+            "title": "Contribution",
+            "formula": "Contribution (%) = (Product Sales ÷ Total Category Sales) × 100",
+            "example": {
+                "product_sales": 50000,
+                "category_sales": 200000
+            },
+            "explanation": "Contribution shows the share of a product relative to the total category."
+        }
+    }
+
+    return guides.get(metric, None)
+
+
