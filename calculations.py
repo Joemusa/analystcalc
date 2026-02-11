@@ -51,7 +51,7 @@ def growth(current, previous):
 
     return {
         "metric": "Growth",
-        "formula": "(Current − Previous) ÷ Previous × 100",
+        "formula": "(CY Sales − LY Sales) ÷ LY Sales × 100",
         "calculation": f"({current} − {previous}) ÷ {previous} × 100",
         "result": round(value, 2),
         "unit": "%"
@@ -96,7 +96,7 @@ def metric_guide(metric):
         },
 
         "Growth": {
-            "formula": "Growth (%) = ((Current - Previous) ÷ Previous) × 100",
+            "formula": "Growth (%) = ((CY Sales - LY Sales) ÷ LY Sales) × 100",
             "explanation": "Growth measures percentage increase or decrease between two periods.",
             "example_values": (100000, 80000)
         },
