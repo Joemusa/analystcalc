@@ -75,11 +75,23 @@ def generate_metric_response(metric):
 **Explanation:**  
 {explanation}
 """
+# =========================================================
+# 🧠 NATURAL LANGUAGE INPUT
+# =========================================================
+st.subheader("🧠 Ask in plain English")
+
+user_question = st.text_input(
+    "Example: Calculate numeric distribution if 120 stores stock the product out of 400"
+)
+
+result = None  # shared result container
+
 if user_question:
+
     metric = detect_metric(user_question)
     roles = extract_number_roles(user_question)
 
-    # 1️⃣ If user only wants explanation (no numbers)
+    # 1️⃣ If user only wants explanation (no numbers provided)
     if metric and not roles:
         explanation = generate_metric_response(
             metric.lower().replace(" ", "_")
@@ -95,6 +107,16 @@ if user_question:
             roles["stocking"],
             roles["total_stores"]
         )
+
+    elif metric == "Market Share" and "brand_sales" in roles and "market_sales" in roles:
+        result = market_share(
+            roles["brand_sales"],
+            roles["market_sales"]
+        )
+
+    elif metric == "Contribution" and len(roles) >= 2:
+        values = list(roles.values())
+        result = contribution(values[0], values[1])
 
     else:
         st.warning("I understood the metric, but not all required values.")
