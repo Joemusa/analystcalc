@@ -21,6 +21,7 @@ mode = st.radio(
 from parser import extract_number_roles, detect_metric
 from calculations import (
     numeric_distribution,
+    Weighted_distribution,
     market_share,
     contribution,
     growth
@@ -49,7 +50,14 @@ def metric_guide(metric):
             "formula": "Contribution (%) = (Product Sales ÷ Total Category Sales) × 100",
             "example": {"product_sales": 50000, "category_sales": 200000},
             "explanation": "Contribution measures how much a product contributes to the total category."
-        }
+        },
+
+        "Weighted Distribution": {
+            "formula": "Weighted Distribution (%) = (Category Sales in Stores Carrying Brand ÷ Total Category Sales) × 100",
+            "explanation": "Weighted Distribution measures the quality of distribution by accounting for store importance based on category sales.",
+            "example_values": (750000, 1000000)
+},
+
     }
 
     return guides.get(metric, None)
