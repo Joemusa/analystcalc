@@ -1,5 +1,17 @@
 import streamlit as st
 
+st.set_page_config(
+    page_title="DataOrbis Metrics Assistant",
+    page_icon="📊",
+    layout="centered"
+)
+
+st.title("📊 DataOrbis Metrics Assistant")
+st.caption("Internal Tool – Sales & Distribution KPI Calculator")
+
+st.divider()
+
+
 # 🔹 Import logic
 from parser import extract_number_roles, detect_metric
 from calculations import (
