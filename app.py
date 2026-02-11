@@ -95,6 +95,24 @@ def generate_metric_response(metric):
 # =========================================================
 # 🧠 NATURAL LANGUAGE INPUT
 # =========================================================
+
+def display_result(result_dict):
+    st.divider()
+    st.subheader(f"📊 {result_dict['metric']}")
+
+    st.markdown("### 📐 Formula")
+    st.info(result_dict["formula"])
+
+    st.markdown("### 🧮 Calculation")
+    st.write(result_dict["calculation"])
+
+    st.markdown("### ✅ Result")
+    st.success(f"{result_dict['result']} {result_dict['unit']}")
+
+
+
+
+
 st.subheader("🧠 Ask in Plain English")
 
 user_question = st.text_input(
