@@ -1,21 +1,23 @@
 import re
 
-def detect_metric(text: str):
-    text = text.lower()
+def detect_metric(question):
 
-    if "numeric distribution" in text or "distribution" in text:
-        return "Numeric Distribution"
+    question = question.lower()
 
-    if "weighted distribution" in text or "weighted" in text:
+    # 🔹 Always check more specific terms first
+    if "weighted distribution" in question:
         return "Weighted Distribution"
 
-    if "market share" in text or "share" in text:
-        return "Market Share"
+    if "numeric distribution" in question:
+        return "Numeric Distribution"
 
-    if "growth" in text or "increase" in text or "decline" in text:
+    if "growth" in question:
         return "Growth"
 
-    if "contribution" in text:
+    if "market share" in question:
+        return "Market Share"
+
+    if "contribution" in question:
         return "Contribution"
 
     return None
