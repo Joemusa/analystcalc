@@ -86,15 +86,10 @@ def generate_metric_response(metric):
         calculation = f"(50,000 ÷ 200,000) × 100 = {result:.2f}%"
 
     elif metric == "weighted_distribution":
-
-    example = guide["example_values"]
-    weighted_sales, total_category_sales = example
-
-    value = (weighted_sales / total_category_sales) * 100
-
-    calculation = f"({weighted_sales} ÷ {total_category_sales}) × 100 = {value:.2f}%"
-
-
+        example = guide["example_values"]
+        weighted_sales, total_category_sales = example
+        value = (weighted_sales / total_category_sales) * 100
+        calculation = f"({weighted_sales} ÷ {total_category_sales}) × 100 = {value:.2f}%"
     else:
         return None
 
