@@ -1,1 +1,27 @@
+CALC_ASSETS = {
+    "weighted_distribution": {
+        "title": "CY Weighted Distribution",
+        "image": "assets/calcs/weighted_distribution.png",
+        "numerator": "CY Sales (Filtered by current brand context)",
+        "denominator": "Total Category Sales (All Brands – All Manufacturers – All Segments)",
+        "formula": "Weighted Distribution (%) = (Brand Sales in Stores Selling Brand ÷ Total Category Sales) × 100",
+        "explanation": """
+Weighted Distribution measures the sales-weighted reach of a product.
+It shows how important the stores are where the product is listed.
+Unlike Numeric Distribution, it accounts for store sales size.
+"""
+    },
+
+    "numeric_distribution": {
+        "title": "Numeric Distribution",
+        "image": "assets/calcs/numeric_distribution.png",
+        "numerator": "Number of stores stocking the product",
+        "denominator": "Total stores in universe",
+        "formula": "Numeric Distribution (%) = (Stocking Stores ÷ Total Stores) × 100",
+        "explanation": """
+Numeric Distribution measures physical availability.
+It tells us reach, not performance.
+"""
+    }
+}
 
