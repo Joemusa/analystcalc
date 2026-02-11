@@ -117,6 +117,10 @@ if user_question:
         if metric == "Weighted Distribution":
             result = weighted_distribution(value1, value2)
 
+        if metric == "Weighted Distribution" and not roles:
+            display_calc_asset("weighted_distribution")
+
+
         elif metric == "Numeric Distribution":
             result = numeric_distribution(value1, value2)
 
