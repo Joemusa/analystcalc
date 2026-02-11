@@ -172,10 +172,10 @@ if user_question:
         result = contribution(values[0], values[1])
 
     elif metric == "Weighted Distribution" and "weighted_sales" in roles and "total_category_sales" in roles:
-    result = weighted_distribution(
+        result = weighted_distribution(
         roles["weighted_sales"],
         roles["total_category_sales"]
-    )
+        )
 
 
     else:
