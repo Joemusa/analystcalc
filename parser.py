@@ -4,23 +4,32 @@ def detect_metric(question):
 
     question = question.lower()
 
-    # 🔹 Always check more specific terms first
     if "weighted distribution" in question:
         return "Weighted Distribution"
-
-    if "numeric distribution" in question:
+    elif "numeric distribution" in question:
         return "Numeric Distribution"
-
-    if "growth" in question:
+    elif "growth" in question:
         return "Growth"
-
-    if "market share" in question:
-        return "Market Share"
-
-    if "contribution" in question:
+    elif "contribution" in question:
         return "Contribution"
+    else:
+        return None
 
-    return None
+
+def extract_number_roles(question):
+
+    import re
+
+    numbers = re.findall(r"\d+\.?\d*", question)
+
+    roles = {}
+
+    if len(numbers) >= 2:
+        roles["value1"] = float(numbers[0])
+        roles["value2"] = float(numbers[1])
+
+    return roles
+
 
 
 def extract_number_roles(text: str):
