@@ -1,211 +1,146 @@
 import streamlit as st
+from parser import detect_metric, extract_number_roles
+from calculations import (
+    numeric_distribution,
+    market_share,
+    contribution,
+    growth,
+    weighted_distribution
+)
 
-def display_bi_logic(metric):
-
-    image_map = {
-        "Weighted Distribution": "assets/weighted_distribution.png",
-        "Growth": "assets/growth_calc.png",
-        "Numeric Distribution": "assets/numeric_distribution.png"
-    }
-
-    if metric in image_map:
-        with st.expander("📷 View BI System Logic"):
-            st.image(image_map[metric], use_container_width=True)
-
-
+# =====================================================
+# PAGE CONFIG
+# =====================================================
 st.set_page_config(
-    page_title="DataOrbis Metrics Assistant",
+    page_title="DataOrbis Internal KPI Assistant",
     page_icon="📊",
     layout="centered"
 )
 
-st.title("📊 DataOrbis Metrics Assistant")
-st.caption("Internal Tool – Sales & Distribution KPI Calculator")
-
+st.title("📊 DataOrbis Internal KPI Assistant")
+st.caption("Sales & Distribution Metrics Knowledge Tool")
 st.divider()
 
-mode = st.radio(
-    "Select Mode",
-    ["Explain a Metric", "Calculate with My Numbers"]
-)
-
-# =========================================================
-# 🔹 MANUAL DROPDOWN UI
-# =========================================================
-
-st.divider()
-st.subheader("🔢 Or calculate manually")
-
-metric_choice = st.selectbox(
-    "Choose a metric",
-    [
-        "Numeric Distribution",
-        "Weighted Distribution",
-        "Market Share",
-        "Contribution",
-        "Growth"
-    ]
-)
-
-
-# 🔹 Import logic
-from parser import extract_number_roles, detect_metric
-from calculations import (
-    numeric_distribution,
-    weighted_distribution,
-    market_share,
-    contribution,
-    growth
-)
+# =====================================================
+# METRIC GUIDE (EXPLANATION MODE)
+# =====================================================
 
 def metric_guide(metric):
 
     guides = {
 
-        "numeric_distribution": {
-            "title": "Numeric Distribution",
-            "formula": "Numeric Distribution (%) = (Number of stores stocking ÷ Total stores) × 100",
-            "example": {"stocking_stores": 120, "total_stores": 400},
-            "explanation": "Numeric Distribution measures product reach across stores."
+        "Weighted Distribution": {
+            "formula": "Weighted Distribution (%) = (Weighted Sales ÷ Total Weighted Sales) × 100",
+            "example_calc": "(300,000 ÷ 1,000,000) × 100 = 30.00%",
+            "explanation": "Weighted Distribution measures the quality of distribution. It reflects distribution weighted by store size or category sales, not just number of stores.",
+            "image": "assets/weighted_distribution.png"
         },
 
-        "growth": {
-            "title": "Growth (Year-on-Year)",
-            "formula": "Growth (%) = ((Current - Previous) ÷ Previous) × 100",
-            "example": {"current": 100000, "previous": 80000},
-            "explanation": "Growth shows percentage increase or decrease versus prior period."
+        "Growth": {
+            "formula": "Growth (%) = ((Current Period - Previous Period) ÷ Previous Period) × 100",
+            "example_calc": "((120,000 - 100,000) ÷ 100,000) × 100 = 20.00%",
+            "explanation": "Growth shows percentage change between two time periods.",
+            "image": "assets/growth.png"
         },
 
-        "contribution": {
-            "title": "Contribution",
+        "Numeric Distribution": {
+            "formula": "Numeric Distribution (%) = (Stores Stocking ÷ Total Stores) × 100",
+            "example_calc": "(120 ÷ 400) × 100 = 30.00%",
+            "explanation": "Numeric Distribution measures product reach across stores.",
+            "image": "assets/numeric_distribution.png"
+        },
+
+        "Contribution": {
             "formula": "Contribution (%) = (Product Sales ÷ Total Category Sales) × 100",
-            "example": {"product_sales": 50000, "category_sales": 200000},
-            "explanation": "Contribution measures how much a product contributes to the total category."
-        },
-
-        "weighted distribution": {
-            "formula": "Weighted Distribution (%) = (Category Sales in Stores Carrying Brand ÷ Total Category Sales) × 100",
-            "explanation": "Weighted Distribution measures the quality of distribution by accounting for store importance based on category sales.",
-            "example_values": (750000, 1000000)
-},
+            "example_calc": "(50,000 ÷ 200,000) × 100 = 25.00%",
+            "explanation": "Contribution shows the share of a product within its category.",
+            "image": "assets/contribution.png"
+        }
 
     }
 
     return guides.get(metric, None)
-def generate_metric_response(metric):
+
+
+# =====================================================
+# DISPLAY FUNCTION
+# =====================================================
+
+def display_explanation(metric):
 
     guide = metric_guide(metric)
 
     if not guide:
-        return None
+        st.warning("Metric not recognised.")
+        return
 
-    title = guide["title"]
-    formula = guide["formula"]
-    explanation = guide["explanation"]
-    example = guide["example"]
-
-    if metric == "numeric_distribution":
-        result = (example["stocking_stores"] / example["total_stores"]) * 100
-        calculation = f"(120 ÷ 400) × 100 = {result:.2f}%"
-
-    elif metric == "growth":
-        result = ((example["current"] - example["previous"]) / example["previous"]) * 100
-        calculation = f"((100,000 - 80,000) ÷ 80,000) × 100 = {result:.2f}%"
-
-    elif metric == "contribution":
-        result = (example["product_sales"] / example["category_sales"]) * 100
-        calculation = f"(50,000 ÷ 200,000) × 100 = {result:.2f}%"
-
-    elif metric == "weighted_distribution":
-        example = guide["example_values"]
-        weighted_sales, total_category_sales = example
-        value = (weighted_sales / total_category_sales) * 100
-        calculation = f"({weighted_sales} ÷ {total_category_sales}) × 100 = {value:.2f}%"
-    else:
-        return None
-
-    return f"""
-### 📊 {title}
-
-**Formula:**  
-{formula}
-
-**Example Calculation:**  
-{calculation}
-
-**Explanation:**  
-{explanation}
-"""
-# =========================================================
-# 🧠 NATURAL LANGUAGE INPUT
-# =========================================================
-
-def display_result(result_dict):
-    st.divider()
-    st.subheader(f"📊 {result_dict['metric']}")
+    st.subheader(f"📊 {metric}")
 
     st.markdown("### 📐 Formula")
-    st.info(result_dict["formula"])
+    st.info(guide["formula"])
 
-    st.markdown("### 🧮 Calculation")
-    st.write(result_dict["calculation"])
+    st.markdown("### 🧮 Example Calculation")
+    st.write(guide["example_calc"])
 
-    st.markdown("### ✅ Result")
-    st.success(f"{result_dict['result']} {result_dict['unit']}")
+    st.markdown("### 📝 Explanation")
+    st.write(guide["explanation"])
 
-st.subheader("🧠 Ask in Plain English")
+    with st.expander("📷 View BI System Logic"):
+        st.image(guide["image"], use_container_width=True)
+
+
+# =====================================================
+# NATURAL LANGUAGE INPUT
+# =====================================================
+
+st.subheader("🧠 Ask in plain English")
 
 user_question = st.text_input(
-    "Examples: \n"
-    "- How to calculate year on year growth\n"
-    "- Calculate numeric distribution if 120 stores stock out of 400\n"
-    "- What is contribution?\n"
+    "Example: How to calculate weighted distribution"
 )
-
-
-result = None  # shared result container
 
 if user_question:
 
     metric = detect_metric(user_question)
     roles = extract_number_roles(user_question)
 
-    # 1️⃣ If user only wants explanation (no numbers provided)
+    # EXPLANATION MODE (No numbers provided)
     if metric and not roles:
-        explanation = generate_metric_response(
-            metric.lower().replace(" ", "_")
-        )
-        st.markdown(explanation)
+        display_explanation(metric)
 
-    # 2️⃣ If user provided numbers
-    elif metric == "Growth" and "current" in roles and "previous" in roles:
-        result = growth(roles["current"], roles["previous"])
+    # CALCULATION MODE (Numbers provided)
+    elif metric and roles:
 
-    elif metric == "Numeric Distribution" and "stocking" in roles and "total_stores" in roles:
-        result = numeric_distribution(
-            roles["stocking"],
-            roles["total_stores"]
-        )
+        value1 = roles.get("value1")
+        value2 = roles.get("value2")
 
-    elif metric == "Market Share" and "brand_sales" in roles and "market_sales" in roles:
-        result = market_share(
-            roles["brand_sales"],
-            roles["market_sales"]
-        )
+        if metric == "Weighted Distribution":
+            result = weighted_distribution(value1, value2)
 
-    elif metric == "Contribution" and len(roles) >= 2:
-        values = list(roles.values())
-        result = contribution(values[0], values[1])
+        elif metric == "Numeric Distribution":
+            result = numeric_distribution(value1, value2)
 
-    elif metric == "Weighted Distribution" and "weighted_sales" in roles and "total_category_sales" in roles:
-        result = weighted_distribution(
-        roles["weighted_sales"],
-        roles["total_category_sales"]
-        )
+        elif metric == "Growth":
+            result = growth(value1, value2)
 
+        elif metric == "Contribution":
+            result = contribution(value1, value2)
+
+        else:
+            result = None
+
+        if result:
+            st.subheader(f"📊 {result['metric']}")
+            st.markdown("### 📐 Formula")
+            st.info(result["formula"])
+
+            st.markdown("### 🧮 Calculation")
+            st.write(result["calculation"])
+
+            st.success(f"Result: {result['result']} {result['unit']}")
 
     else:
-        st.warning("I understood the metric, but not all required values.")
+        st.warning("Metric recognised, but insufficient data provided.")
 
 
 
