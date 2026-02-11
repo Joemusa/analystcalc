@@ -57,6 +57,22 @@ def growth(current, previous):
         "unit": "%"
     }
 
+def weighted_distribution(weighted_sales, total_category_sales):
+
+    if total_category_sales == 0:
+        return None
+
+    value = (weighted_sales / total_category_sales) * 100
+
+    return {
+        "metric": "Weighted Distribution",
+        "formula": "Weighted Distribution (%) = (Category Sales in Stores Carrying Brand ÷ Total Category Sales) × 100",
+        "calculation": f"({weighted_sales} ÷ {total_category_sales}) × 100",
+        "result": round(value, 2),
+        "unit": "%"
+    }
+
+
 def metric_guide(metric):
 
     guides = {
@@ -83,7 +99,15 @@ def metric_guide(metric):
             "formula": "Growth (%) = ((Current - Previous) ÷ Previous) × 100",
             "explanation": "Growth measures percentage increase or decrease between two periods.",
             "example_values": (100000, 80000)
-        }
+        },
+
+        "Weighted Distribution": {
+            "formula": "Weighted Distribution (%) = (Category Sales in Stores Carrying Brand ÷ Total Category Sales) × 100",
+            "explanation": "Weighted Distribution measures the quality of distribution by accounting for store importance based on category sales.",
+            "example_values": (750000, 1000000)
+},
+
+        
 
     }
 
