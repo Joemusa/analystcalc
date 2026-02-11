@@ -52,7 +52,7 @@ def metric_guide(metric):
             "explanation": "Contribution measures how much a product contributes to the total category."
         },
 
-        "Weighted Distribution": {
+        "weighted distribution": {
             "formula": "Weighted Distribution (%) = (Category Sales in Stores Carrying Brand ÷ Total Category Sales) × 100",
             "explanation": "Weighted Distribution measures the quality of distribution by accounting for store importance based on category sales.",
             "example_values": (750000, 1000000)
