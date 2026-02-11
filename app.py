@@ -75,10 +75,29 @@ def generate_metric_response(metric):
 **Explanation:**  
 {explanation}
 """
-if metric and not roles:
-    explanation = generate_metric_response(metric.lower().replace(" ", "_"))
-    if explanation:
+if user_question:
+    metric = detect_metric(user_question)
+    roles = extract_number_roles(user_question)
+
+    # 1️⃣ If user only wants explanation (no numbers)
+    if metric and not roles:
+        explanation = generate_metric_response(
+            metric.lower().replace(" ", "_")
+        )
         st.markdown(explanation)
+
+    # 2️⃣ If user provided numbers
+    elif metric == "Growth" and "current" in roles and "previous" in roles:
+        result = growth(roles["current"], roles["previous"])
+
+    elif metric == "Numeric Distribution" and "stocking" in roles and "total_stores" in roles:
+        result = numeric_distribution(
+            roles["stocking"],
+            roles["total_stores"]
+        )
+
+    else:
+        st.warning("I understood the metric, but not all required values.")
 
 
 
