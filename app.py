@@ -141,4 +141,43 @@ def metric_guide(metric):
 
     return guides.get(metric, None)
 
+def generate_metric_response(metric):
+
+    guide = metric_guide(metric)
+
+    if not guide:
+        return "Metric not recognised."
+
+    title = guide["title"]
+    formula = guide["formula"]
+    explanation = guide["explanation"]
+    example = guide["example"]
+
+    if metric == "numeric_distribution":
+        result = (example["stocking_stores"] / example["total_stores"]) * 100
+        calculation = f"({example['stocking_stores']} ÷ {example['total_stores']}) × 100 = {result:.2f}%"
+
+    elif metric == "growth":
+        result = ((example["current"] - example["previous"]) / example["previous"]) * 100
+        calculation = f"(({example['current']} - {example['previous']}) ÷ {example['previous']}) × 100 = {result:.2f}%"
+
+    elif metric == "contribution":
+        result = (example["product_sales"] / example["category_sales"]) * 100
+        calculation = f"({example['product_sales']} ÷ {example['category_sales']}) × 100 = {result:.2f}%"
+
+    else:
+        calculation = "Calculation not implemented."
+
+    return f"""
+### 📊 {title}
+
+**Formula:**
+{formula}
+
+**Example Calculation:**
+{calculation}
+
+**Explanation:**
+{explanation}
+"""
 
