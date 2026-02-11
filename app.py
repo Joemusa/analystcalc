@@ -85,11 +85,15 @@ def generate_metric_response(metric):
         result = (example["product_sales"] / example["category_sales"]) * 100
         calculation = f"(50,000 ÷ 200,000) × 100 = {result:.2f}%"
 
-    elif metric_choice == "Weighted Distribution":
-        a = st.number_input("Category Sales in Stores Carrying the Brand", min_value=0.0)
-        b = st.number_input("Total Category Sales in All Stores", min_value=0.0)
-    if st.button("Calculate", key="wd"):
-        result = weighted_distribution(a, b)
+    elif metric == "weighted_distribution":
+
+    example = guide["example_values"]
+    weighted_sales, total_category_sales = example
+
+    value = (weighted_sales / total_category_sales) * 100
+
+    calculation = f"({weighted_sales} ÷ {total_category_sales}) × 100 = {value:.2f}%"
+
 
     else:
         return None
