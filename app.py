@@ -1,16 +1,10 @@
 import streamlit as st
-from parser import detect_metric, extract_number_roles
-from calculations import (
-    numeric_distribution,
-    market_share,
-    contribution,
-    growth,
-    weighted_distribution
-)
+import pandas as pd
+from openai import OpenAI
 
-# =====================================================
+# ================================
 # PAGE CONFIG
-# =====================================================
+# ================================
 st.set_page_config(
     page_title="DataOrbis Internal KPI Assistant",
     page_icon="📊",
@@ -21,131 +15,98 @@ st.title("📊 DataOrbis Internal KPI Assistant")
 st.caption("Sales & Distribution Metrics Knowledge Tool")
 st.divider()
 
-# =====================================================
-# METRIC GUIDE (EXPLANATION MODE)
-# =====================================================
+# ================================
+# LOAD KPI LIBRARY
+# ================================
+kpi_df = pd.read_excel("kpi_library.xlsx", sheet_name="KPIs")
 
-def metric_guide(metric):
+# ================================
+# KPI DETECTION FUNCTION
+# ================================
+def detect_kpi(question, kpi_df):
+    question = question.lower()
 
-    guides = {
+    for _, row in kpi_df.iterrows():
+        keywords = str(row["keywords"]).lower().split(",")
+        for keyword in keywords:
+            if keyword.strip() in question:
+                return row
 
-        "Weighted Distribution": {
-            "formula": "Weighted Distribution (%) = (Weighted Sales ÷ Total Weighted Sales) × 100",
-            "example_calc": "(300,000 ÷ 1,000,000) × 100 = 30.00%",
-            "explanation": "Weighted Distribution measures the quality of distribution. It reflects distribution weighted by store size or category sales, not just number of stores.",
-            "image": "assets/weighted_distribution.png"
-        },
-
-        "Growth": {
-            "formula": "Growth (%) = ((Current Period - Previous Period) ÷ Previous Period) × 100",
-            "example_calc": "((120,000 - 100,000) ÷ 100,000) × 100 = 20.00%",
-            "explanation": "Growth shows percentage change between two time periods.",
-            "image": "assets/growth.png"
-        },
-
-        "Numeric Distribution": {
-            "formula": "Numeric Distribution (%) = (Stores Stocking ÷ Total Stores) × 100",
-            "example_calc": "(120 ÷ 400) × 100 = 30.00%",
-            "explanation": "Numeric Distribution measures product reach across stores.",
-            "image": "assets/numeric_distribution.png"
-        },
-
-        "Contribution": {
-            "formula": "Contribution (%) = (Product Sales ÷ Total Category Sales) × 100",
-            "example_calc": "(50,000 ÷ 200,000) × 100 = 25.00%",
-            "explanation": "Contribution shows the share of a product within its category.",
-            "image": "assets/contribution.png"
-        }
-
-    }
-
-    return guides.get(metric, None)
+    return None
 
 
-# =====================================================
-# DISPLAY FUNCTION
-# =====================================================
+# ================================
+# AI EXPLANATION FUNCTION
+# ================================
+client = OpenAI()
 
-def display_explanation(metric):
+def generate_ai_explanation(kpi_row):
 
-    guide = metric_guide(metric)
+    prompt = f"""
+    Explain the KPI below in simple business terms.
 
-    if not guide:
-        st.warning("Metric not recognised.")
-        return
+    KPI: {kpi_row['kpi_name']}
+    Formula: {kpi_row['formula']}
+    Description: {kpi_row['description']}
 
-    st.subheader(f"📊 {metric}")
+    Explain:
+    1. What it measures
+    2. Why it matters
+    3. When to use it
+    Keep it professional and under 150 words.
+    """
 
-    st.markdown("### 📐 Formula")
-    st.info(guide["formula"])
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a professional BI analyst explaining KPIs."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.3
+    )
 
-    st.markdown("### 🧮 Example Calculation")
-    st.write(guide["example_calc"])
-
-    st.markdown("### 📝 Explanation")
-    st.write(guide["explanation"])
-
-    with st.expander("📷 View BI System Logic"):
-        st.image(guide["image"], use_container_width=True)
+    return response.choices[0].message.content
 
 
-# =====================================================
+# ================================
 # NATURAL LANGUAGE INPUT
-# =====================================================
-
+# ================================
 st.subheader("🧠 Ask in plain English")
 
 user_question = st.text_input(
-    "Example: How to calculate weighted distribution"
+    "Example: How to calculate weighted distribution?"
 )
 
 if user_question:
 
-    metric = detect_metric(user_question)
-    roles = extract_number_roles(user_question)
+    kpi_row = detect_kpi(user_question, kpi_df)
 
-    # EXPLANATION MODE (No numbers provided)
-    if metric and not roles:
-        display_explanation(metric)
+    if kpi_row is not None:
 
-    # CALCULATION MODE (Numbers provided)
-    elif metric and roles:
+        st.divider()
+        st.subheader(f"📊 {kpi_row['kpi_name']}")
 
-        value1 = roles.get("value1")
-        value2 = roles.get("value2")
+        st.markdown("### 📐 Formula")
+        st.info(kpi_row["formula"])
 
-        if metric == "Weighted Distribution":
-            result = weighted_distribution(value1, value2)
+        st.markdown("### 🧮 Example Calculation")
+        st.write(kpi_row["example_calculation"])
 
-        if metric == "Weighted Distribution" and not roles:
-            display_calc_asset("weighted_distribution")
+        st.markdown("### 📊 Unit")
+        st.write(kpi_row["unit"])
 
+        # AI Explanation
+        st.markdown("### 🧠 Business Explanation")
+        explanation = generate_ai_explanation(kpi_row)
+        st.write(explanation)
 
-        elif metric == "Numeric Distribution":
-            result = numeric_distribution(value1, value2)
-
-        elif metric == "Growth":
-            result = growth(value1, value2)
-
-        elif metric == "Contribution":
-            result = contribution(value1, value2)
-
-        else:
-            result = None
-
-        if result:
-            st.subheader(f"📊 {result['metric']}")
-            st.markdown("### 📐 Formula")
-            st.info(result["formula"])
-
-            st.markdown("### 🧮 Calculation")
-            st.write(result["calculation"])
-
-            st.success(f"Result: {result['result']} {result['unit']}")
+        # Optional Screenshot (if column exists)
+        if "image_path" in kpi_row and pd.notna(kpi_row["image_path"]):
+            with st.expander("📷 View BI System Logic"):
+                st.image(kpi_row["image_path"], use_container_width=True)
 
     else:
-        st.warning("Metric recognised, but insufficient data provided.")
-
+        st.warning("KPI not recognised. Please check your wording.")
 
 
 
