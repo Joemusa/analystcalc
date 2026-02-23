@@ -22,6 +22,18 @@ Unlike Numeric Distribution, it accounts for store sales size.
 Numeric Distribution measures physical availability.
 It tells us reach, not performance.
 """
+    },
+    "customer_count": {
+        "title": "Customer Count",
+        "image": "assets/calcs/numeric_distribution.png",
+        "numerator": "Number of stores stocking the product",
+        "denominator": "Total stores in universe",
+        "formula": "Count({AllMembers([Customers].[Customer For Count])},([measures].+[6791dd6b-5f98-49c3-baf6-fd2407cb4cd6]))" 
+        "explanation": """
+Count of all customer that sold atleast one item during the period in question.
+It tells us the number of active customers during the selected period.
+"""
     }
+
 }
 
