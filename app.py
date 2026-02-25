@@ -32,7 +32,7 @@ def load_data():
 # LOAD DATA (THIS WAS MISSING)
 df = load_data()
 
-st.write(df.head())
+st.write(df)
 
 # ================================
 # KPI DETECTION FUNCTION
