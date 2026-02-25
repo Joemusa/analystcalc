@@ -7,11 +7,9 @@ from openai import OpenAI
 # ================================
 
 st.markdown(
-    "<h1 style='font-size:32px;'>📊 DataOrbis Internal Calculation Dictionary</h1>",
+    "<h1 style='font-size:32px;'> DataOrbis Internal Calculation Dictionary</h1>",
     unsafe_allow_html=True
 )
-
-
 
 # ================================
 # LOAD KPI LIBRARY (GOOGLE SHEET)
@@ -123,7 +121,7 @@ def generate_ai_explanation(kpi_row):
 # ================================
 # USER INPUT
 # ================================
-st.subheader("🧠 Ask in plain English")
+st.subheader("Ask in plain English")
 
 user_question = st.text_input(
     "Example: How to calculate weighted distribution?"
@@ -139,7 +137,7 @@ if user_question:
     if kpi_row is not None and pd.notna(kpi_row.get("kpi_name")):
 
         st.divider()
-        st.subheader(f"📊 {kpi_row.get('kpi_name')}")
+        st.subheader(f"{kpi_row.get('kpi_name')}")
 
         # Formula
         if pd.notna(kpi_row.get("formula")):
@@ -148,17 +146,17 @@ if user_question:
 
         # Example
         if pd.notna(kpi_row.get("example_calculation")):
-            st.markdown("### 🧮 Example Calculation")
+            st.markdown("### Example Calculation")
             st.write(kpi_row.get("example_calculation"))
 
         # Unit
         if pd.notna(kpi_row.get("unit")):
-            st.markdown("### 📊 Unit")
+            st.markdown("### Unit")
             st.write(kpi_row.get("unit"))
 
         # AI Explanation
         if pd.notna(kpi_row.get("description")):
-            st.markdown("### 🧠 Business Explanation")
+            st.markdown("###Business Explanation")
             explanation = generate_ai_explanation(kpi_row)
             st.write(explanation)
 
@@ -167,7 +165,7 @@ if user_question:
             path_value = kpi_row.get("path")
 
     if pd.notna(path_value) and str(path_value).strip() != "":
-        st.markdown("### 📂 Source Calculation Path")
+        st.markdown("### Source Calculation Path")
         st.code(path_value)
 
         # Optional Screenshot
