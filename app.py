@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 from openai import OpenAI
-import os
 
 # ================================
 # PAGE CONFIG
@@ -30,13 +29,16 @@ def load_data():
         st.write(e)
         return pd.DataFrame()
 
+# LOAD DATA (THIS WAS MISSING)
+df = load_data()
+
 # ================================
 # KPI DETECTION FUNCTION
 # ================================
 def detect_kpi(user_question, df):
-    question = question.lower()
+    question = user_question.lower()
 
-    for _, row in kpi_df.iterrows():
+    for _, row in df.iterrows():
         keywords = str(row["keywords"]).lower().split(",")
         for keyword in keywords:
             if keyword.strip() in question:
@@ -76,7 +78,6 @@ def generate_ai_explanation(kpi_row):
 
     return response.choices[0].message.content
 
-
 # ================================
 # NATURAL LANGUAGE INPUT
 # ================================
@@ -109,7 +110,7 @@ if user_question:
         explanation = generate_ai_explanation(kpi_row)
         st.write(explanation)
 
-        # Optional Screenshot (if column exists)
+        # Optional Screenshot
         if "image_path" in kpi_row and pd.notna(kpi_row["image_path"]):
             with st.expander("📷 View BI System Logic"):
                 st.image(kpi_row["image_path"], use_container_width=True)
