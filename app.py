@@ -36,8 +36,6 @@ def load_data():
 
 
 df = load_data()
-st.write("Loaded KPIs:")
-st.write(df["kpi_name"])
 # Stop app if sheet failed
 if df.empty:
     st.stop()
