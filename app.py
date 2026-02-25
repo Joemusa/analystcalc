@@ -33,7 +33,7 @@ def load_data():
 # ================================
 # KPI DETECTION FUNCTION
 # ================================
-def detect_kpi(question, kpi_df):
+def detect_kpi(user_question, kpi_df):
     question = question.lower()
 
     for _, row in kpi_df.iterrows():
