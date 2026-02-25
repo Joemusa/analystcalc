@@ -16,37 +16,57 @@ st.caption("Sales & Distribution Metrics Knowledge Tool")
 st.divider()
 
 # ================================
-# LOAD KPI LIBRARY
+# LOAD KPI LIBRARY (GOOGLE SHEET)
 # ================================
-@st.cache_data
+@st.cache_data(ttl=60)  # Refresh every 60 seconds
 def load_data():
     try:
         url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT3mFh7RblUtcE32W8U1q5-RnHgSEnec06RHKJOaAt_DdwPYNxtCL0QfSJ_6ab0Pd6YLlTIxo4AT9l5/pub?output=csv"
         df = pd.read_csv(url)
+
+        # Normalize column names (VERY IMPORTANT)
+        df.columns = df.columns.str.strip().str.lower()
+
         return df
+
     except Exception as e:
         st.error("Failed to load Google Sheet.")
         st.write(e)
         return pd.DataFrame()
 
-# LOAD DATA (THIS WAS MISSING)
+
 df = load_data()
 
-st.write(df)
+# Stop app if sheet failed
+if df.empty:
+    st.stop()
 
 # ================================
 # KPI DETECTION FUNCTION
 # ================================
 def detect_kpi(user_question, df):
-    question = user_question.lower()
+    question = user_question.lower().strip()
+
+    best_match = None
+    highest_score = 0
 
     for _, row in df.iterrows():
-        keywords = str(row["keywords"]).lower().split(",")
-        for keyword in keywords:
-            if keyword.strip() in question:
-                return row
 
-    return None
+        text_to_match = (
+            str(row.get("kpi_name", "")) + " " +
+            str(row.get("keywords", "")) + " " +
+            str(row.get("description", ""))
+        ).lower()
+
+        # Simple word overlap scoring
+        score = sum(word in text_to_match for word in question.split())
+
+        if score > highest_score:
+            highest_score = score
+            best_match = row
+
+    return best_match
+
 
 # ================================
 # AI EXPLANATION FUNCTION
@@ -58,14 +78,15 @@ def generate_ai_explanation(kpi_row):
     prompt = f"""
     Explain the KPI below in simple business terms.
 
-    KPI: {kpi_row['kpi_name']}
-    Formula: {kpi_row['formula']}
-    Description: {kpi_row['description']}
+    KPI: {kpi_row.get('kpi_name')}
+    Formula: {kpi_row.get('formula')}
+    Description: {kpi_row.get('description')}
 
     Explain:
     1. What it measures
     2. Why it matters
     3. When to use it
+
     Keep it professional and under 100 words.
     """
 
@@ -80,8 +101,9 @@ def generate_ai_explanation(kpi_row):
 
     return response.choices[0].message.content
 
+
 # ================================
-# NATURAL LANGUAGE INPUT
+# USER INPUT
 # ================================
 st.subheader("🧠 Ask in plain English")
 
@@ -89,38 +111,48 @@ user_question = st.text_input(
     "Example: How to calculate weighted distribution?"
 )
 
+# ================================
+# KPI RESPONSE SECTION
+# ================================
 if user_question:
 
     kpi_row = detect_kpi(user_question, df)
 
-    if kpi_row is not None:
+    if kpi_row is not None and pd.notna(kpi_row.get("kpi_name")):
 
         st.divider()
-        st.subheader(f"📊 {kpi_row['kpi_name']}")
+        st.subheader(f"📊 {kpi_row.get('kpi_name')}")
 
-        st.markdown("### 📐 Formula")
-        st.info(kpi_row["formula"])
+        # Formula
+        if pd.notna(kpi_row.get("formula")):
+            st.markdown("### 📐 Formula")
+            st.info(kpi_row.get("formula"))
 
-        st.markdown("### 🧮 Example Calculation")
-        st.write(kpi_row["example_calculation"])
+        # Example
+        if pd.notna(kpi_row.get("example_calculation")):
+            st.markdown("### 🧮 Example Calculation")
+            st.write(kpi_row.get("example_calculation"))
 
-        st.markdown("### 📊 Unit")
-        st.write(kpi_row["unit"])
+        # Unit
+        if pd.notna(kpi_row.get("unit")):
+            st.markdown("### 📊 Unit")
+            st.write(kpi_row.get("unit"))
 
         # AI Explanation
-        st.markdown("### 🧠 Business Explanation")
-        explanation = generate_ai_explanation(kpi_row)
-        st.write(explanation)
+        if pd.notna(kpi_row.get("description")):
+            st.markdown("### 🧠 Business Explanation")
+            explanation = generate_ai_explanation(kpi_row)
+            st.write(explanation)
 
-        # Show Path if exists
+        # Path (NEW COLUMN SUPPORT)
         if "path" in df.columns and pd.notna(kpi_row.get("path")):
-        st.markdown("### 📂 Source Calculation Path")
-        st.code(kpi_row["path"])
+            st.markdown("### 📂 Source Calculation Path")
+            st.code(kpi_row.get("path"))
 
         # Optional Screenshot
-if "image_path" in df.columns and pd.notna(kpi_row.get("image_path")):
-    with st.expander("📷 View BI System Logic"):
-        st.image(kpi_row["image_path"], use_container_width=True)
+        if "image_path" in df.columns and pd.notna(kpi_row.get("image_path")):
+            with st.expander("📷 View BI System Logic"):
+                st.image(kpi_row.get("image_path"), use_container_width=True)
 
     else:
         st.warning("KPI not recognised. Please check your wording.")
