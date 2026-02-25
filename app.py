@@ -47,6 +47,9 @@ if df.empty:
 def detect_kpi(user_question, df):
     question = user_question.lower().strip()
 
+    best_match = None
+    highest_score = 0
+
     for _, row in df.iterrows():
 
         kpi_name = str(row.get("kpi_name", "")).lower()
@@ -55,17 +58,26 @@ def detect_kpi(user_question, df):
 
         combined_text = f"{kpi_name} {keywords} {description}"
 
-        # Direct substring match (most reliable)
-        if question in combined_text:
-            return row
+        score = 0
 
-        # Keyword-level match
-        for keyword in keywords.split(","):
-            if keyword.strip() in question:
-                return row
+        # Exact phrase bonus
+        if question in combined_text:
+            score += 5
+
+        # Word-level scoring
+        for word in question.split():
+            if word in combined_text:
+                score += 1
+
+        if score > highest_score:
+            highest_score = score
+            best_match = row
+
+    # Only return if we found at least some match
+    if highest_score > 0:
+        return best_match
 
     return None
-
 
 # ================================
 # AI EXPLANATION FUNCTION
