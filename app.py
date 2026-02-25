@@ -21,11 +21,14 @@ st.divider()
 # ================================
 @st.cache_data
 def load_data():
-    url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSOXByifpAsMkR8oin5EhUaYaiKbWLbDxS1C9dLWvs6ZWka7dWrLDxf_SYbgQqnAg/pub?output=csv"
-    df = pd.read_csv(url)
-    return df
-
-df = load_data()
+    try:
+        url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSOXByifpAsMkR8oin5EhUaYaiKbWLbDxS1C9dLWvs6ZWka7dWrLDxf_SYbgQqnAg/pub?output=csv"
+        df = pd.read_csv(url)
+        return df
+    except Exception as e:
+        st.error("Failed to load Google Sheet.")
+        st.write(e)
+        return pd.DataFrame()
 
 # ================================
 # KPI DETECTION FUNCTION
