@@ -11,7 +11,7 @@ st.set_page_config(
     layout="centered"
 )
 st.markdown(
-    "<h1 style='font-size:48px;'>📊 DataOrbis Internal KPI Assistant</h1>",
+    "<h1 style='font-size:32px;'>📊 DataOrbis Internal KPI Assistant</h1>",
     unsafe_allow_html=True
 )
 
