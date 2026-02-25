@@ -19,7 +19,13 @@ st.divider()
 # ================================
 # LOAD KPI LIBRARY
 # ================================
-kpi_df = pd.read_excel("kpi_library.xlsx", sheet_name="KPIs")
+@st.cache_data
+def load_data():
+    url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSOXByifpAsMkR8oin5EhUaYaiKbWLbDxS1C9dLWvs6ZWka7dWrLDxf_SYbgQqnAg/pub?output=csv"
+    df = pd.read_csv(url)
+    return df
+
+df = load_data()
 
 # ================================
 # KPI DETECTION FUNCTION
