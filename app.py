@@ -10,6 +10,10 @@ st.set_page_config(
     page_icon="📊",
     layout="centered"
 )
+st.markdown(
+    "<h1 style='font-size:48px;'>📊 DataOrbis Internal KPI Assistant</h1>",
+    unsafe_allow_html=True
+)
 
 st.title("📊 DataOrbis Internal KPI Assistant")
 st.caption("Sales & Distribution Metrics Knowledge Tool")
