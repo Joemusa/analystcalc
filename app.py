@@ -21,7 +21,7 @@ st.divider()
 @st.cache_data
 def load_data():
     try:
-        url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSOXByifpAsMkR8oin5EhUaYaiKbWLbDxS1C9dLWvs6ZWka7dWrLDxf_SYbgQqnAg/pub?output=csv"
+        url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT3mFh7RblUtcE32W8U1q5-RnHgSEnec06RHKJOaAt_DdwPYNxtCL0QfSJ_6ab0Pd6YLlTIxo4AT9l5/pub?output=csv"
         df = pd.read_csv(url)
         return df
     except Exception as e:
