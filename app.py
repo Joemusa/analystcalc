@@ -47,25 +47,24 @@ if df.empty:
 def detect_kpi(user_question, df):
     question = user_question.lower().strip()
 
-    best_match = None
-    highest_score = 0
-
     for _, row in df.iterrows():
 
-        text_to_match = (
-            str(row.get("kpi_name", "")) + " " +
-            str(row.get("keywords", "")) + " " +
-            str(row.get("description", ""))
-        ).lower()
+        kpi_name = str(row.get("kpi_name", "")).lower()
+        keywords = str(row.get("keywords", "")).lower()
+        description = str(row.get("description", "")).lower()
 
-        # Simple word overlap scoring
-        score = sum(word in text_to_match for word in question.split())
+        combined_text = f"{kpi_name} {keywords} {description}"
 
-        if score > highest_score:
-            highest_score = score
-            best_match = row
+        # Direct substring match (most reliable)
+        if question in combined_text:
+            return row
 
-    return best_match
+        # Keyword-level match
+        for keyword in keywords.split(","):
+            if keyword.strip() in question:
+                return row
+
+    return None
 
 
 # ================================
