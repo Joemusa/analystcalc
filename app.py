@@ -112,18 +112,15 @@ if user_question:
         explanation = generate_ai_explanation(kpi_row)
         st.write(explanation)
 
-        st.markdown("### 📊 Unit")
-        st.write(kpi_row["unit"])
-
         # Show Path if exists
-        if "path" in kpi_row and pd.notna(kpi_row["path"]):
-            st.markdown("### 📂 Source Calculation Path")
-            st.code(kpi_row["path"])
+        if "path" in df.columns and pd.notna(kpi_row.get("path")):
+        st.markdown("### 📂 Source Calculation Path")
+        st.code(kpi_row["path"])
 
         # Optional Screenshot
-        if "image_path" in kpi_row and pd.notna(kpi_row["image_path"]):
-            with st.expander("📷 View BI System Logic"):
-                st.image(kpi_row["image_path"], use_container_width=True)
+if "image_path" in df.columns and pd.notna(kpi_row.get("image_path")):
+    with st.expander("📷 View BI System Logic"):
+        st.image(kpi_row["image_path"], use_container_width=True)
 
     else:
         st.warning("KPI not recognised. Please check your wording.")
