@@ -36,7 +36,7 @@ def load_data():
 
 
 df = load_data()
-
+st.write("Columns:", df.columns.tolist())
 # Stop app if sheet failed
 if df.empty:
     st.stop()
