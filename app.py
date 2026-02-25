@@ -145,9 +145,12 @@ if user_question:
             st.write(explanation)
 
         # Path (NEW COLUMN SUPPORT)
-        if "path" in df.columns and pd.notna(kpi_row.get("path")):
-            st.markdown("### 📂 Source Calculation Path")
-            st.code(kpi_row.get("path"))
+        if "path" in df.columns:
+            path_value = kpi_row.get("path")
+
+    if pd.notna(path_value) and str(path_value).strip() != "":
+        st.markdown("### 📂 Source Calculation Path")
+        st.code(path_value)
 
         # Optional Screenshot
         if "image_path" in df.columns and pd.notna(kpi_row.get("image_path")):
