@@ -32,6 +32,8 @@ def load_data():
 # LOAD DATA (THIS WAS MISSING)
 df = load_data()
 
+st.write(df.head())
+
 # ================================
 # KPI DETECTION FUNCTION
 # ================================
