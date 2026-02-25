@@ -7,7 +7,7 @@ from openai import OpenAI
 # ================================
 
 st.markdown(
-    "<h1 style='font-size:32px;'>📊 DataOrbis Internal KPI Assistant</h1>",
+    "<h1 style='font-size:32px;'>📊 DataOrbis Internal Calculation Dictionary</h1>",
     unsafe_allow_html=True
 )
 
