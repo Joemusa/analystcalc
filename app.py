@@ -45,36 +45,46 @@ if df.empty:
 # ================================
 # KPI DETECTION FUNCTION
 # ================================
+import re
+
+def clean_text(text):
+    return re.sub(r'[^a-zA-Z0-9\s]', '', str(text).lower())
+
 def detect_kpi(user_question, df):
-    question = user_question.lower().strip()
+    question = clean_text(user_question)
 
     best_match = None
     highest_score = 0
 
     for _, row in df.iterrows():
 
-        kpi_name = str(row.get("kpi_name", "")).lower()
-        keywords = str(row.get("keywords", "")).lower()
-        description = str(row.get("description", "")).lower()
-
-        combined_text = f"{kpi_name} {keywords} {description}"
+        combined_text = clean_text(
+            f"{row.get('kpi_name', '')} "
+            f"{row.get('keywords', '')} "
+            f"{row.get('description', '')}"
+        )
 
         score = 0
+
+        # Word-level scoring
+        for word in question.split():
+            if word in combined_text:
+                score += 2
 
         # Exact phrase bonus
         if question in combined_text:
             score += 5
 
-        # Word-level scoring
-        for word in question.split():
-            if word in combined_text:
-                score += 1
+        # Penalise wrong context (Store vs Depot)
+        if "store" in question and "depot" in combined_text:
+            score -= 2
+        if "depot" in question and "store" in combined_text:
+            score -= 2
 
         if score > highest_score:
             highest_score = score
             best_match = row
 
-    # Only return if we found at least some match
     if highest_score > 0:
         return best_match
 
