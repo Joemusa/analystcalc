@@ -66,7 +66,7 @@ def generate_ai_explanation(kpi_row):
     1. What it measures
     2. Why it matters
     3. When to use it
-    Keep it professional and under 150 words.
+    Keep it professional and under 100 words.
     """
 
     response = client.chat.completions.create(
@@ -111,6 +111,14 @@ if user_question:
         st.markdown("### 🧠 Business Explanation")
         explanation = generate_ai_explanation(kpi_row)
         st.write(explanation)
+
+        st.markdown("### 📊 Unit")
+        st.write(kpi_row["unit"])
+
+        # Show Path if exists
+        if "path" in kpi_row and pd.notna(kpi_row["path"]):
+            st.markdown("### 📂 Source Calculation Path")
+            st.code(kpi_row["path"])
 
         # Optional Screenshot
         if "image_path" in kpi_row and pd.notna(kpi_row["image_path"]):
