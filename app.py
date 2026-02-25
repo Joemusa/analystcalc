@@ -11,9 +11,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.title("📊 DataOrbis Internal KPI Assistant")
-st.caption("Sales & Distribution Metrics Knowledge Tool")
-st.divider()
+
 
 # ================================
 # LOAD KPI LIBRARY (GOOGLE SHEET)
