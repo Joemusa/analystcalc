@@ -88,7 +88,7 @@ user_question = st.text_input(
 
 if user_question:
 
-    kpi_row = detect_kpi(user_question, kpi_df)
+    kpi_row = detect_kpi(user_question, df)
 
     if kpi_row is not None:
 
