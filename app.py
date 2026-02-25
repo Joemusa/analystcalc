@@ -5,11 +5,7 @@ from openai import OpenAI
 # ================================
 # PAGE CONFIG
 # ================================
-st.set_page_config(
-    page_title="DataOrbis Internal KPI Assistant",
-    page_icon="📊",
-    layout="centered"
-)
+
 st.markdown(
     "<h1 style='font-size:32px;'>📊 DataOrbis Internal KPI Assistant</h1>",
     unsafe_allow_html=True
