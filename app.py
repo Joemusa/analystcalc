@@ -17,7 +17,7 @@ st.markdown(
 @st.cache_data(ttl=60)  # Refresh every 60 seconds
 def load_data():
     try:
-        url = "https://docs.google.com/spreadsheets/d/1bUOL1nmeeznZV935rt-Dxi_ihJRzRcsjd7iPnghVf9o/edit?usp=drive_link"
+        url = "https://drive.google.com/drive/folders/1QBrKCxKDzSpZaGOyrI5RtHWmx4rY5eE1?usp=sharing"
         df = pd.read_csv(url)
 
         # Normalize column names (VERY IMPORTANT)
